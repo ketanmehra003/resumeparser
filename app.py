@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import os
 import subprocess
-
+from parsers import extract_skills
 
 app = Flask(__name__)
 
@@ -26,6 +26,10 @@ def parse_resume():
         return redirect(request.url)
 
     resume_file = request.files['resume']
+    print(resume_file)
+    # resume_text=print_resume_content(resume_file)
+    # Skills=extract_skills(resume_text)
+    # print(Skills)
 
     # If the user does not select a file, the browser submits an empty file without a filename
     if resume_file.filename == '':
