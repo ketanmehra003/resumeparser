@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/upload">Upload</a></li>
+            <li><a href="#">ATS</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+            <li>{{username}} <a href="/logout">logout</a></li>
+        </ul>
+    </nav>
+    <div class="main">
+        <h1>Resume Parser</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="pdf_file" id="pdf_file">
+            <button type="submit" id="upload">Upload</button>
+        </form>
+    </div>
+</body>
+</html>
