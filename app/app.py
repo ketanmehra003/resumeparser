@@ -3,6 +3,9 @@ from pymongo import MongoClient
 from gridfs import GridFS
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
+from app.filter import extract_skills
+import tempfile
+import os
 
 app = Flask(__name__)
 app.secret_key = 'a2V0YW5fbWVocmFfaXNfZ3JlYXQ=' # Add a secret key here
@@ -60,6 +63,27 @@ def upload_file():
             print(f"An error occurred: {e}")
             return "An error occurred while uploading the file"
     return render_template('upload.html', username=session['username'])
+
+@app.route('/parser')
+@login_required
+def parser():
+    # Get user's current upload (if any)
+    if 'username' in session:
+        username = session['username']
+        user = users_collection.find_one({'username': username})
+        if user and 'upload_id' in user:
+            # Retrieve the file from MongoDB GridFS
+            file = fs.get(user['upload_id'])
+            # Create a temporary file to store the content
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                temp_file.write(file.read())
+                temp_file_path = temp_file.name
+            # Pass the file path to the extract_skills function
+            skills = extract_skills(temp_file_path)
+            # Clean up temporary file
+            os.unlink(temp_file_path)
+            return render_template('parser.html', skills=skills)
+    return redirect(url_for('index'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
