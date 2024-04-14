@@ -6,8 +6,28 @@
     <title>Parser</title>
 </head>
 <body>
-    {% for skill in skills %}
-    <p>{{skill}}</p>
-    {% endfor %}
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/upload">Upload</a></li>
+            <li><a href="/parser">ATS</a></li>
+            <li><a href="/jobs">Jobs</a></li>
+            <li>{{username}} <a href="/logout">logout</a></li>
+        </ul>
+    </nav>
+    <h4>Skills</h4>
+    <ul>
+        {% for skill in skills %}
+            <li>{{skill}}</li>
+        {% endfor %}
+    </ul>
+    <form action="/parser" method="post">
+        <label for="description">Job Description:</label><br>
+        <input type="text" id="description" name="description"><br>
+        <button type="submit">Calculate</button>
+    </form>
+    {% if ats_score %}
+    <p>ATS Score: {{ats_score}}</p>
+    {% endif %}
 </body>
 </html>

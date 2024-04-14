@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs</title>
+</head>
+<body>
+    <div class="main">
+        <div class="job-details">
+            <h1>Job Details</h1>
+            <div class="job-details-content">
+                <div class="job-details-content-left">
+                    <h2>{{job.title}}</h2>
+                    <p>{{job.via}}</p>
+                    <p>{{job.description}}</p>
+                    <p>Location: {{job.location}}</p>
+                    <p>Company: {{job.company_name}}</p>
+                    <p>Schedule Type: {{job.detected_extensions.schedule_type}}</p>
+                    <p>Posted on: {{job.detected_extensions.posted_at}}</p>
+                    {% if job.related_links.1 %}
+                        <p>{{job.related_links.1.text}} <a href={{job.related_links.1.link}}>here</a></p>
+                    {% else %}
+                        <p>{{job.related_links.0.text}} <a href={{job.related_links.0.link}}>here</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

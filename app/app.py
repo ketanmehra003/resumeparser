@@ -4,8 +4,10 @@ from gridfs import GridFS
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from app.filter import extract_skills
+from app.test import calculate_ats_score
 import tempfile
 import os
+from serpapi import GoogleSearch
 
 app = Flask(__name__)
 app.secret_key = 'a2V0YW5fbWVocmFfaXNfZ3JlYXQ=' # Add a secret key here
@@ -17,6 +19,9 @@ fs = GridFS(db)
 
 # Collection for user management
 users_collection = db['users']
+
+skills = ""
+response = ""
 
 def login_required(f):
     @wraps(f)
@@ -64,26 +69,64 @@ def upload_file():
             return "An error occurred while uploading the file"
     return render_template('upload.html', username=session['username'])
 
-@app.route('/parser')
+def extract():
+    global skills
+    username = session['username']
+    user = users_collection.find_one({'username': username})
+    if user and 'upload_id' in user:
+        # Retrieve the file from MongoDB GridFS
+        file = fs.get(user['upload_id'])
+        # Create a temporary file to store the content
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_file.write(file.read())
+            temp_file_path = temp_file.name
+        # Pass the file path to the extract_skills function
+        skills = extract_skills(temp_file_path)
+        # Clean up temporary file
+        os.unlink(temp_file_path)
+
+@app.route('/parser', methods=['GET','POST'])
 @login_required
 def parser():
-    # Get user's current upload (if any)
-    if 'username' in session:
-        username = session['username']
-        user = users_collection.find_one({'username': username})
-        if user and 'upload_id' in user:
-            # Retrieve the file from MongoDB GridFS
-            file = fs.get(user['upload_id'])
-            # Create a temporary file to store the content
-            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                temp_file.write(file.read())
-                temp_file_path = temp_file.name
-            # Pass the file path to the extract_skills function
-            skills = extract_skills(temp_file_path)
-            # Clean up temporary file
-            os.unlink(temp_file_path)
-            return render_template('parser.html', skills=skills)
-    return redirect(url_for('index'))
+    global skills
+    if not skills:
+        extract()
+    if request.method == 'POST':
+        description = request.form['description']
+        ats_score = calculate_ats_score(description, skills)
+        return render_template('parser.html', skills=skills, ats_score=ats_score, username=session['username'])
+    return render_template('parser.html', skills=skills, username=session['username'])
+
+@app.route('/jobs')
+@login_required
+def jobs():
+    global response
+    if type(response) == dict:
+        pass
+    else:
+        if type(skills) == list:
+            pass
+        else:
+            extract()
+        # Google Jobs API parameters
+        params = {
+          "api_key": "1b87c32f91aa96dc64c8aa75a9fcb5b36d09514cb20c27a3660d304407223443",
+          "engine": "google_jobs",
+          "google_domain": "google.co.in",
+          "q": " ".join(skills),
+          "hl": "en"
+        }
+        search = GoogleSearch(params)
+        response = search.get_dict()
+        response = dict(enumerate(response["jobs_results"]))
+        
+    return render_template('jobs.html', jobs=response, username=session['username'])
+
+@app.route('/jobs/<int:job_id>')
+@login_required
+def jobdetails(job_id):
+    global response
+    return render_template('jobdetails.html', job=response[job_id])
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

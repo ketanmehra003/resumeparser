@@ -30,7 +30,6 @@ def extract_skills(pdf_path):
     skills_list = [
         'Python', 'Java', 'JavaScript', 'HTML', 'CSS', 'SQL',
         'Machine Learning', 'Data Analysis', 'Data Science', 'AI',
-        'Project Management', 'Communication', 'Teamwork', 'Problem Solving'
     ]
 
     # Initialize an empty list to store the extracted skills

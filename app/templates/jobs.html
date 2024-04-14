@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Jobs</title>
 </head>
 <body>
     <nav>
@@ -16,12 +16,18 @@
             <li>{{username}} <a href="/logout">logout</a></li>
         </ul>
     </nav>
-    <div class="main">
-        <h1>Resume Parser</h1>
-        <form action="/upload" method="post" enctype="multipart/form-data">
-            <input type="file" name="pdf_file" id="pdf_file">
-            <button type="submit" id="upload">Upload</button>
-        </form>
-    </div>
+    <ul>
+    {% for job in jobs %}
+        <li>
+            <a href="/jobs/{{ job }}">
+                {{ jobs[job].title }}
+            </a>
+            <br>
+            <p>
+                {{ jobs[job].location }}
+            </p>
+        </li>
+    {% endfor %}
+    </ul>
 </body>
 </html>
