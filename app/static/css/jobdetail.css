@@ -1,0 +1,66 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+.main {
+    width: 80%;
+    margin: 50px auto;
+}
+
+.job-details {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.job-details h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.job-details-content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.job-details-content-left {
+    flex: 1;
+}
+
+.job-details-content-left h2 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.job-details-content-left p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.job-details-content-left p a {
+    color: #007bff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.job-details-content-left p a:hover {
+    color: #0056b3;
+}
+
+@media screen and (max-width: 768px) {
+    .main {
+        width: 90%;
+    }
+}

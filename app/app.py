@@ -94,7 +94,7 @@ def parser():
     if request.method == 'POST':
         description = request.form['description']
         ats_score = calculate_ats_score(description, skills)
-        return render_template('parser.html', skills=skills, ats_score=ats_score, username=session['username'])
+        return render_template('parser.html', skills=skills, ats_score=ats_score*100, username=session['username'])
     return render_template('parser.html', skills=skills, username=session['username'])
 
 @app.route('/jobs')
